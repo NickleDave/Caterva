@@ -739,8 +739,16 @@ int caterva_blosc_array_get_slice_buffer(caterva_context_t *ctx, caterva_array_t
                                             }
                                         }
                                     }
-                                    blosc2_set_maskout(array->sc->dctx, block_maskout, nblocks);
-                                    blosc2_schunk_decompress_chunk(array->sc, nchunk, chunk, (size_t) array->extchunknitems * typesize);
+                                    uint8_t *compressed_chunk;
+                                    bool need_free;
+                                    blosc2_schunk_get_chunk(array->sc, nchunk, &compressed_chunk, &need_free);
+                                    blosc2_context *dctx = blosc2_create_dctx(BLOSC2_DPARAMS_DEFAULTS);
+                                    blosc2_set_maskout(dctx, block_maskout, nblocks);
+                                    blosc2_decompress_ctx(dctx, compressed_chunk, chunk,
+                                                  (size_t) array->extchunknitems * typesize);
+                                    blosc2_free_ctx(dctx);
+                                    // blosc2_schunk_decompress_chunk(array->sc, nchunk, chunk, (size_t)
+                                    // array->extchunknitems * typesize);
                                     for (jj[0] = j_start[0]; jj[0] <= j_stop[0]; ++jj[0]) {
                                         for (jj[1] = j_start[1]; jj[1] <= j_stop[1]; ++jj[1]) {
                                             for (jj[2] = j_start[2]; jj[2] <= j_stop[2]; ++jj[2]) {
