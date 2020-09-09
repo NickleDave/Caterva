@@ -740,6 +740,9 @@ int caterva_blosc_array_get_slice_buffer(caterva_context_t *ctx, caterva_array_t
                                             }
                                         }
                                     }
+                                    blosc2_dparams dparams = {0};
+                                    dparams.nthreads = ctx->cfg->nthreads;
+                                    array->sc->dctx = blosc2_create_dctx(dparams);
                                     blosc2_set_maskout(array->sc->dctx, block_maskout, nblocks);
                                     blosc2_schunk_decompress_chunk(array->sc, nchunk, chunk, (size_t) array->extchunknitems * typesize);
                                     for (jj[0] = j_start[0]; jj[0] <= j_stop[0]; ++jj[0]) {
