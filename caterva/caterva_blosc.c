@@ -742,9 +742,23 @@ int caterva_blosc_array_get_slice_buffer(caterva_context_t *ctx, caterva_array_t
                                     }
                                     blosc2_dparams dparams = {0};
                                     dparams.nthreads = ctx->cfg->nthreads;
-                                    array->sc->dctx = blosc2_create_dctx(dparams);
-                                    blosc2_set_maskout(array->sc->dctx, block_maskout, nblocks);
-                                    blosc2_schunk_decompress_chunk(array->sc, nchunk, chunk, (size_t) array->extchunknitems * typesize);
+                                    blosc2_context *dctx = blosc2_create_dctx(dparams);
+                                    blosc2_set_maskout(dctx, block_maskout, nblocks);
+
+                                    void *chunk_aux;
+                                    bool needs_free;
+                                    blosc2_schunk_get_chunk(array->sc, nchunk, &chunk_aux, &needs_free);
+                                    size_t nbytes;
+                                    size_t cbytes;
+                                    size_t blocksize;
+                                    blosc_cbuffer_sizes(chunk_aux, &nbytes, &cbytes, &blocksize);
+
+                                    blosc2_decompress_ctx(dctx, chunk_aux, cbytes, chunk, (size_t) array->extchunknitems * typesize);
+
+                                    if (needs_free) {
+                                        free(chunk_aux);
+                                    }
+                                    blosc2_free_ctx(dctx);
                                     for (jj[0] = j_start[0]; jj[0] <= j_stop[0]; ++jj[0]) {
                                         for (jj[1] = j_start[1]; jj[1] <= j_stop[1]; ++jj[1]) {
                                             for (jj[2] = j_start[2]; jj[2] <= j_stop[2]; ++jj[2]) {
