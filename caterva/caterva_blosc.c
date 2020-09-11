@@ -745,7 +745,7 @@ int caterva_blosc_array_get_slice_buffer(caterva_context_t *ctx, caterva_array_t
                                     blosc2_context *dctx = blosc2_create_dctx(dparams);
                                     blosc2_set_maskout(dctx, block_maskout, nblocks);
 
-                                    void *chunk_aux;
+                                    uint8_t *chunk_aux;
                                     bool needs_free;
                                     blosc2_schunk_get_chunk(array->sc, nchunk, &chunk_aux, &needs_free);
                                     size_t nbytes;
