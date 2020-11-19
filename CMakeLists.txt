@@ -34,6 +34,10 @@ else()
     add_compile_options(-Wall -Wextra)
 endif()
 
+if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+endif()
+
 if (ENABLE_ASAN)
     message(STATUS "Enable sanitizers")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Os -fno-omit-frame-pointer -fsanitize=address")
