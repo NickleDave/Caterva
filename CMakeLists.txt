@@ -34,9 +34,11 @@ else()
     add_compile_options(-Wall -Wextra)
 endif()
 
+    message(STATUS "Before -m32 flag")
 if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
-    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
     message(STATUS "Add -m32 flag")
+    set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+    SET(CMAKE_EXE_LINKER_FLAGS  "${CMAKE_EXE_LINKER_FLAGS} -m32")
 endif()
 
 if (ENABLE_ASAN)
