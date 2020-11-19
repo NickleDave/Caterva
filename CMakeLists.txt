@@ -36,6 +36,7 @@ endif()
 
 if("${CMAKE_SIZEOF_VOID_P}" STREQUAL "4")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -m32")
+    message(STATUS "Add -m32 flag")
 endif()
 
 if (ENABLE_ASAN)
